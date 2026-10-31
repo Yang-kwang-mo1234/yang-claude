@@ -1,5 +1,29 @@
 {
+  "permissions": {
+    "allow": [
+      "Read(//Users/jerry/.claude/task-observer/**)",
+      "Edit(//Users/jerry/.claude/task-observer/**)",
+      "Write(//Users/jerry/.claude/task-observer/**)",
+      "Bash(ls /Users/jerry/.claude/task-observer*)",
+      "Bash(find /Users/jerry/.claude/task-observer/*)",
+      "Bash(bash /Users/jerry/workspace/yang-claude/.claude/skills/task-observer/scripts/*)",
+      "Bash(bash \"/Users/jerry/workspace/yang-claude/.claude/skills/task-observer/scripts/*)"
+    ],
+    "additionalDirectories": [
+      "/Users/jerry/.claude/task-observer"
+    ]
+  },
   "hooks": {
+    "SessionStart": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "\"$CLAUDE_PROJECT_DIR\"/.claude/hooks/task-observer-session-start.sh"
+          }
+        ]
+      }
+    ],
     "PreToolUse": [
       {
         "matcher": "Edit|Write|MultiEdit|NotebookEdit",
@@ -14,6 +38,7 @@
   },
   "enabledPlugins": {
     "claude-code-setup@anthropic-plugin-directory": true,
-    "commit-commands@anthropic-plugin-directory": true
+    "commit-commands@anthropic-plugin-directory": true,
+    "superpowers@anthropic-plugin-directory": true
   }
 }
