@@ -27,6 +27,7 @@ git clone https://github.com/Yang-kwang-mo1234/yang-claude.git && cd yang-claude
 | html-plan | 스킬 | 계획 문서를 HTML 파일로 작성 (plannotator/effective-html, 설명만 수정) |
 | html-diagram | 스킬 | 흐름도, 구조도를 HTML로 작성 (plannotator/effective-html, 설명만 수정) |
 | karpathy-guidelines | 스킬 | 코딩 실수를 줄이는 작업 원칙 |
+| skills-update | 스킬 | `/skills-update`로 업스트림이 바뀐 스킬을 찾아 업데이트. 확인은 Node 스크립트(`check.mjs`, macOS/Windows 공통)가 GitHub 폴더 해시만 비교하고, 로컬 수정은 `sources.json`에 적어 둔 대로 다시 넣음 |
 | graphify | 스킬 | 코드, 문서, 이미지를 지식 그래프로 만들고 `query`/`path`/`explain`으로 질문 (Graphify-Labs/graphify, 목차만 추가) |
 | agent-monitor-pane | 플러그인 | 채팅 옆 모니터 창, 입력창 위 git 브랜치 줄과 **Graft Init / Update** 버튼. `settings.json`의 마켓플레이스 설정으로 GitHub에서 자동 설치 |
 
@@ -167,3 +168,22 @@ https://github.com/Graphify-Labs/graphify
   - 그래프는 프로젝트의 `graphify-out/`에 생깁니다. 커밋하지 않으려면 그 프로젝트의 `.gitignore`에 `graphify-out/`을 넣으세요.
   - 브랜치 이름이 길면 버튼이 다음 줄로 밀리지 않도록 이름 뒤쪽을 `...`으로 자릅니다.
 - 이미 설치된 패널은 패널 아래쪽 **Update** 버튼으로 0.2.8을 받은 뒤 새 세션을 열면 버튼이 나옵니다.
+
+## 6. skills-update 스킬
+
+```text
+"/skills-update"로 동작하는 스킬을 만들어 줘.
+설치된 스킬 중 업스트림이 업데이트된 스킬을 찾고, 업데이트가 있으면 지침에 따라 업데이트해야 해.
+가장 간단하고 토큰을 적게 쓰는 방법으로 만들고, Windows에서도 동작하게 Node로 작성해 줘.
+```
+
+- 설치: `./install.sh`가 `global/skills/skills-update`를 `~/.claude/skills/skills-update`에 복사합니다. 직접 설치하려면 이 폴더를 그대로 복사하세요. 설치 후 Claude Code를 다시 시작합니다.
+- 필요한 것: Node 18 이상, `gh` (`gh auth login`으로 로그인). macOS와 Windows(Git Bash)에서 똑같이 동작하고, `jq`는 필요 없습니다.
+- 사용: Claude Code에서 `/skills-update`를 입력합니다. `disable-model-invocation: true`라서 입력할 때만 실행되고, 평소에는 스킬 목록에 설명이 올라가지 않습니다.
+- 동작:
+  1. `check.mjs`가 스킬마다 GitHub 폴더 해시(트리 SHA)를 비교해서 바뀐 스킬만 출력합니다. 바뀐 것이 없으면 Claude가 파일을 읽지 않고 끝나서 토큰을 거의 쓰지 않습니다.
+  2. `npx skills`로 설치한 스킬(`~/.agents/.skill-lock.json`)은 `npx skills update -g -y`로 업데이트합니다.
+  3. `~/.claude/skills`에 복사한 스킬은 업스트림 파일로 덮어쓰고, `sources.json`의 `local`에 적힌 로컬 수정(description, `## Contents` 목차)을 다시 넣은 뒤 해시를 갱신합니다.
+  4. graphify는 PyPI 버전을 비교하고, 바뀌었으면 `uv tool upgrade graphifyy`와 `graphify install --platform claude`를 실행합니다.
+- 복사본 스킬을 새로 추가하면 `sources.json`에 저장소(`repo`), 경로(`path`), 현재 해시(`hash`), 로컬 수정 내용(`local`)을 한 줄 추가하세요. 현재 해시는 `gh api repos/<저장소>/git/trees/HEAD:<경로> --jq .sha`로 확인합니다.
+- 커밋은 하지 않습니다. 업데이트한 뒤 `global/skills/`의 복사본을 맞추고 직접 커밋하세요.
