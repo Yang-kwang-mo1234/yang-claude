@@ -12,6 +12,7 @@ git clone https://github.com/Yang-kwang-mo1234/yang-claude.git && cd yang-claude
 `install.sh`는 `global/` 폴더의 전역 설정을 `~/.claude`에 설치합니다. `jq`가 필요합니다 (`brew install jq`).
 
 - 스킬, 훅, `CLAUDE.md`는 PC에 없을 때만 복사합니다. 이미 있으면 건드리지 않습니다.
+- graphify CLI가 없으면 `uv tool install graphifyy`로 설치합니다. `uv`가 없으면 설치 방법만 알려 줍니다.
 - `settings.json`은 합칩니다. 기존 값이 우선이고, 훅은 한 번만 추가됩니다. 원래 파일은 실행할 때마다 `settings.json.bak.날짜-시각`으로 따로 남깁니다.
 - 여러 번 실행해도 안전합니다.
 - 설치 후 Claude Code를 다시 시작해야 적용됩니다.
@@ -20,13 +21,14 @@ git clone https://github.com/Yang-kwang-mo1234/yang-claude.git && cd yang-claude
 
 | 이름 | 종류 | 하는 일 |
 |---|---|---|
-| `CLAUDE.md` | 전역 지침 | 위험 명령 처리 규칙, 계획/다이어그램은 HTML 스킬 사용 |
+| `CLAUDE.md` | 전역 지침 | 위험 명령 처리 규칙, 계획/다이어그램은 HTML 스킬 사용, graphify 사용 규칙 |
 | `block-dangerous-git.sh` | 훅 (PreToolUse, Bash) | `git push`, `reset --hard`, `rm -rf` 등을 실행 전에 Allow / Deny로 확인. `git -C 경로 push`처럼 옵션이 끼어도 잡고, `jq`가 없어도 동작 |
 | find-skills | 스킬 | 필요한 스킬을 찾아 설치 |
 | html-plan | 스킬 | 계획 문서를 HTML 파일로 작성 (plannotator/effective-html, 설명만 수정) |
 | html-diagram | 스킬 | 흐름도, 구조도를 HTML로 작성 (plannotator/effective-html, 설명만 수정) |
 | karpathy-guidelines | 스킬 | 코딩 실수를 줄이는 작업 원칙 |
-| agent-monitor-pane | 플러그인 | 채팅 옆 모니터 창. `settings.json`의 마켓플레이스 설정으로 GitHub에서 자동 설치 |
+| graphify | 스킬 | 코드, 문서, 이미지를 지식 그래프로 만들고 `query`/`path`/`explain`으로 질문 (Graphify-Labs/graphify, 목차만 추가) |
+| agent-monitor-pane | 플러그인 | 채팅 옆 모니터 창, 입력창 위 git 브랜치 줄과 **Graft Update** 버튼. `settings.json`의 마켓플레이스 설정으로 GitHub에서 자동 설치 |
 
 스킬 문서(`SKILL.md`)마다 맨 위에 목차(`## Contents`)가 있습니다.
 
@@ -131,3 +133,34 @@ https://code.claude.com/docs/en/hooks
 
 - 동작: 대상 파일이 비밀 파일이면 exit code 2로 작업을 막고, Claude에게 사용자가 직접 수정하라고 안내합니다.
 - 차단되는 파일: `.env`, `.env.*`, `*.pem`, `*.key`, `*.p12`, `*.pfx`, `id_rsa*`, `id_ed25519*`, `credentials.json`, `secrets.*`
+
+## 5. graphify 스킬과 Graft Update 버튼
+
+```text
+아래 GitHub 저장소의 graphify 스킬을 Claude Code 전역(~/.claude/skills)에 설치해 줘.
+
+GitHub:
+https://github.com/Graphify-Labs/graphify
+
+1. graphify CLI를 최신 버전으로 설치하고, Claude Code용 스킬을 전역으로 설치해 줘.
+2. 기존 지침(CLAUDE.md, AGENTS.md)에 graphify 관련 설정이 있으면 그 지침을 따르도록 전역 CLAUDE.md에 규칙을 넣어 줘.
+3. agent-monitor 플러그인의 입력창 위 git 브랜치 줄 오른쪽 끝에 "Graft Update" 버튼을 만들어 줘.
+   누르면 처음 그래프를 만든 뒤 바뀐 파일을 다시 반영하는 graphify update를 실행해야 해.
+4. 브랜치 이름이 길면 버튼이 아래로 밀리지 않도록 이름 뒤쪽을 "..."으로 잘라 줘.
+5. 테스트로 검증하고 이상이 없으면 커밋하고 푸시해 줘.
+```
+
+- CLI 설치: `uv tool install --upgrade graphifyy` (`install.sh`가 없을 때 대신 설치합니다)
+- 스킬 설치: `graphify install --platform claude`. `~/.claude/skills/graphify`에 스킬을 복사하고, 전역 `CLAUDE.md` 끝에 `# graphify` 등록 블록을 씁니다. 이 블록은 설치 프로그램이 관리하니 직접 고치지 않습니다.
+- 처음 쓸 때: 프로젝트 폴더에서 Claude에게 `/graphify .`를 요청하면 `graphify-out/`에 그래프(`graph.json`), 대화형 HTML, `GRAPH_REPORT.md`가 생깁니다. 코드만 있으면 LLM 비용이 없고, 문서·이미지가 있으면 토큰이 듭니다.
+- 질문: `graphify query "인증은 어떻게 동작해?"`, `graphify path "A" "B"`, `graphify explain "X"`
+- 지침 (`global/CLAUDE.md`의 `## Graphify`):
+  - 프로젝트의 `CLAUDE.md`, `AGENTS.md`, `.claude/` 설정에 graphify 지침이 이미 있으면(예: `graphify claude install`이 쓴 섹션이나 훅) 그 지침을 따릅니다.
+  - 없으면 `graphify-out/graph.json`이 있을 때 코드 구조 질문은 graphify로 먼저 찾습니다. 그래프가 없으면 평소처럼 검색합니다.
+- **Graft Update 버튼** (agent-monitor-pane 0.2.7 이상):
+  - 입력창 위 git 브랜치 줄 오른쪽 끝에 있습니다.
+  - 누르면 세션 폴더에서 `graphify update`를 실행해 처음 그래프를 만든 뒤 바뀐 코드 파일을 반영하고, 결과를 알림으로 보여 줍니다. 코드는 매번 빠르게 다시 읽지만, 바뀐 것이 없으면 그래프 파일은 그대로 둡니다.
+  - 그래프가 없으면 `/graphify .`를 먼저 하라고 알려 줍니다.
+  - 문서·이미지 변경은 Claude에게 `/graphify --update`를 요청해야 반영됩니다.
+  - 브랜치 이름이 길면 버튼이 다음 줄로 밀리지 않도록 이름 뒤쪽을 `...`으로 자릅니다.
+- 이미 설치된 패널은 패널 아래쪽 **Update** 버튼으로 0.2.7을 받은 뒤 새 세션을 열면 버튼이 나옵니다.

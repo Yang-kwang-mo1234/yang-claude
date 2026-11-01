@@ -25,6 +25,16 @@ for dir in "$SRC"/skills/*/; do
   fi
 done
 
+# graphify CLI, which the graphify skill and the Graft Update button run
+if command -v graphify >/dev/null 2>&1; then
+  echo "skip   graphify CLI (already installed)"
+elif command -v uv >/dev/null 2>&1; then
+  uv tool install graphifyy -q
+  echo "added  graphify CLI"
+else
+  echo "warn   graphify CLI missing: install uv (brew install uv), then run: uv tool install graphifyy"
+fi
+
 # Hooks
 for file in "$SRC"/hooks/*; do
   name="$(basename "$file")"
