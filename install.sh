@@ -51,7 +51,8 @@ fi
 
 # settings.json
 if [ -e "$DEST/settings.json" ]; then
-  cp "$DEST/settings.json" "$DEST/settings.json.bak"
+  backup="$DEST/settings.json.bak.$(date +%Y%m%d-%H%M%S)"
+  cp "$DEST/settings.json" "$backup"
   tmp="$(mktemp)"
   jq --slurpfile f "$SRC/settings.json" '
     $f[0] as $frag
@@ -64,7 +65,7 @@ if [ -e "$DEST/settings.json" ]; then
           end))
   ' "$DEST/settings.json" > "$tmp"
   mv "$tmp" "$DEST/settings.json"
-  echo "merged settings.json (backup: settings.json.bak)"
+  echo "merged settings.json (backup: $(basename "$backup"))"
 else
   cp "$SRC/settings.json" "$DEST/settings.json"
   echo "added  settings.json"

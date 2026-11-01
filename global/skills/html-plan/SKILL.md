@@ -1,9 +1,15 @@
 ---
 name: html-plan
-description: Direct-invocation specialist for clear, self-contained HTML plans that preserve source material while improving hierarchy, sequence, ownership, dependencies, and reviewability. Use whenever a plan is written as a document: implementation plans, roadmaps, rollouts, plans drafted in plan mode. Not for the app's in-message task list.
+description: Specialist for clear, self-contained HTML plans that preserve source material while improving hierarchy, sequence, ownership, dependencies, and reviewability. Use whenever a plan is written as a document: implementation plans, roadmaps, rollouts, plans drafted in plan mode. Not for the app's in-message task list.
 ---
 
 # HTML Plan
+
+## Contents
+
+- [Shape the document around the work](#shape-the-document-around-the-work)
+- [Preserve traceability](#preserve-traceability)
+- [Build and verify](#build-and-verify)
 
 Turn source material into a plan people can inspect and act on. Preserve the user's scope, ordering, commitments, and terminology unless they ask for broader synthesis.
 

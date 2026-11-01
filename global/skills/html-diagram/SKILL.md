@@ -1,9 +1,15 @@
 ---
 name: html-diagram
-description: Direct-invocation specialist for self-contained HTML diagrams whose layout, notation, and interaction clarify relationships, sequence, topology, state, hierarchy, or quantitative structure. Use whenever a flow, process, sequence, state machine, architecture or other diagram is drawn.
+description: Specialist for self-contained HTML diagrams whose layout, notation, and interaction clarify relationships, sequence, topology, state, hierarchy, or quantitative structure. Use whenever a flow, process, sequence, state machine, architecture or other diagram is drawn.
 ---
 
 # HTML Diagram
+
+## Contents
+
+- [Choose the right model](#choose-the-right-model)
+- [Choose the rendering method](#choose-the-rendering-method)
+- [Build and verify](#build-and-verify)
 
 Build the smallest visual model that makes the relationship easier to understand than prose alone. Match the notation and visual language to the user's project and subject. Do not force every topic into the same SVG boxes and arrows.
 

@@ -6,6 +6,13 @@ license: MIT
 
 # Karpathy Guidelines
 
+## Contents
+
+- [1. Think Before Coding](#1-think-before-coding)
+- [2. Simplicity First](#2-simplicity-first)
+- [3. Surgical Changes](#3-surgical-changes)
+- [4. Goal-Driven Execution](#4-goal-driven-execution)
+
 Behavioral guidelines to reduce common LLM coding mistakes, derived from [Andrej Karpathy's observations](https://x.com/karpathy/status/2015883857489522876) on LLM coding pitfalls.
 
 **Tradeoff:** These guidelines bias toward caution over speed. For trivial tasks, use judgment.

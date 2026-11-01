@@ -12,7 +12,7 @@ git clone https://github.com/Yang-kwang-mo1234/yang-claude.git && cd yang-claude
 `install.sh`는 `global/` 폴더의 전역 설정을 `~/.claude`에 설치합니다. `jq`가 필요합니다 (`brew install jq`).
 
 - 스킬, 훅, `CLAUDE.md`는 PC에 없을 때만 복사합니다. 이미 있으면 건드리지 않습니다.
-- `settings.json`은 합칩니다. 기존 값이 우선이고, 훅은 한 번만 추가됩니다. 원래 파일은 `settings.json.bak`으로 남깁니다.
+- `settings.json`은 합칩니다. 기존 값이 우선이고, 훅은 한 번만 추가됩니다. 원래 파일은 실행할 때마다 `settings.json.bak.날짜-시각`으로 따로 남깁니다.
 - 여러 번 실행해도 안전합니다.
 - 설치 후 Claude Code를 다시 시작해야 적용됩니다.
 
@@ -21,13 +21,14 @@ git clone https://github.com/Yang-kwang-mo1234/yang-claude.git && cd yang-claude
 | 이름 | 종류 | 하는 일 |
 |---|---|---|
 | `CLAUDE.md` | 전역 지침 | 위험 명령 처리 규칙, 계획/다이어그램은 HTML 스킬 사용 |
-| `block-dangerous-git.sh` | 훅 (PreToolUse, Bash) | `git push`, `reset --hard`, `rm -rf` 등을 실행 전에 Allow / Deny로 확인 |
+| `block-dangerous-git.sh` | 훅 (PreToolUse, Bash) | `git push`, `reset --hard`, `rm -rf` 등을 실행 전에 Allow / Deny로 확인. `git -C 경로 push`처럼 옵션이 끼어도 잡고, `jq`가 없어도 동작 |
 | find-skills | 스킬 | 필요한 스킬을 찾아 설치 |
-| git-guardrails-claude-code | 스킬 | 위험한 git 명령을 막는 훅 설정 |
 | html-plan | 스킬 | 계획 문서를 HTML 파일로 작성 (plannotator/effective-html, 설명만 수정) |
 | html-diagram | 스킬 | 흐름도, 구조도를 HTML로 작성 (plannotator/effective-html, 설명만 수정) |
 | karpathy-guidelines | 스킬 | 코딩 실수를 줄이는 작업 원칙 |
 | agent-monitor-pane | 플러그인 | 채팅 옆 모니터 창. `settings.json`의 마켓플레이스 설정으로 GitHub에서 자동 설치 |
+
+스킬 문서(`SKILL.md`)마다 맨 위에 목차(`## Contents`)가 있습니다.
 
 PC의 전역 설정을 바꾼 뒤에는 바뀐 파일을 `global/`에 다시 복사해서 커밋하세요.
 
@@ -36,6 +37,7 @@ PC의 전역 설정을 바꾼 뒤에는 바뀐 파일을 `global/`에 다시 복
 | 이름 | 종류 | 설정 위치 | 하는 일 |
 |---|---|---|---|
 | commit-commands | 플러그인 (스킬) | `.claude/settings.json` | `/commit`, `/commit-push-pr`로 커밋과 PR 작업 |
+| superpowers | 플러그인 (스킬) | `.claude/settings.json` | 브레인스토밍, 계획, TDD, 디버깅, 코드 리뷰 같은 작업 절차 스킬 모음 |
 | context7 | MCP 서버 | `.mcp.json` | 라이브러리의 최신 공식 문서 조회 |
 | protect-secrets | 훅 | `.claude/settings.json`, `.claude/hooks/protect-secrets.sh` | `.env`, 키, 인증서 파일 수정 차단 |
 
