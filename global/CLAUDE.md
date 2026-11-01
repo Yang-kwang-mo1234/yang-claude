@@ -17,7 +17,7 @@
 
 - When a project's `CLAUDE.md`, `AGENTS.md` or `.claude/` settings already have graphify instructions (for example a section or hook written by `graphify claude install`), follow them. They win over the defaults below.
 - Otherwise, when `graphify-out/graph.json` exists, answer questions about the code's structure with `graphify query`, `path` or `explain` before grepping or reading whole files. Without a graph, use plain search and mention that `/graphify .` can build one.
-- `graphify update` (or the Graft Update button above the prompt) refreshes the graph with the code files changed since the last build. Doc, paper and image changes need `/graphify --update`.
+- The Graft button above the prompt reads **Graft Init** in a folder with no graph and builds the code graph (`graphify update .`). Once a graph exists it reads **Graft Update**, which runs `graphify update` to add the code files changed since the last build. Doc, paper and image changes need `/graphify .` or `/graphify --update`.
 - The block below is written by `graphify install --platform claude`; leave it for the installer to refresh.
 
 # graphify

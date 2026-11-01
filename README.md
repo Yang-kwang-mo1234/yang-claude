@@ -28,7 +28,7 @@ git clone https://github.com/Yang-kwang-mo1234/yang-claude.git && cd yang-claude
 | html-diagram | 스킬 | 흐름도, 구조도를 HTML로 작성 (plannotator/effective-html, 설명만 수정) |
 | karpathy-guidelines | 스킬 | 코딩 실수를 줄이는 작업 원칙 |
 | graphify | 스킬 | 코드, 문서, 이미지를 지식 그래프로 만들고 `query`/`path`/`explain`으로 질문 (Graphify-Labs/graphify, 목차만 추가) |
-| agent-monitor-pane | 플러그인 | 채팅 옆 모니터 창, 입력창 위 git 브랜치 줄과 **Graft Update** 버튼. `settings.json`의 마켓플레이스 설정으로 GitHub에서 자동 설치 |
+| agent-monitor-pane | 플러그인 | 채팅 옆 모니터 창, 입력창 위 git 브랜치 줄과 **Graft Init / Update** 버튼. `settings.json`의 마켓플레이스 설정으로 GitHub에서 자동 설치 |
 
 스킬 문서(`SKILL.md`)마다 맨 위에 목차(`## Contents`)가 있습니다.
 
@@ -134,7 +134,7 @@ https://code.claude.com/docs/en/hooks
 - 동작: 대상 파일이 비밀 파일이면 exit code 2로 작업을 막고, Claude에게 사용자가 직접 수정하라고 안내합니다.
 - 차단되는 파일: `.env`, `.env.*`, `*.pem`, `*.key`, `*.p12`, `*.pfx`, `id_rsa*`, `id_ed25519*`, `credentials.json`, `secrets.*`
 
-## 5. graphify 스킬과 Graft Update 버튼
+## 5. graphify 스킬과 Graft Init / Update 버튼
 
 ```text
 아래 GitHub 저장소의 graphify 스킬을 Claude Code 전역(~/.claude/skills)에 설치해 줘.
@@ -147,7 +147,8 @@ https://github.com/Graphify-Labs/graphify
 3. agent-monitor 플러그인의 입력창 위 git 브랜치 줄 오른쪽 끝에 "Graft Update" 버튼을 만들어 줘.
    누르면 처음 그래프를 만든 뒤 바뀐 파일을 다시 반영하는 graphify update를 실행해야 해.
 4. 브랜치 이름이 길면 버튼이 아래로 밀리지 않도록 이름 뒤쪽을 "..."으로 잘라 줘.
-5. 테스트로 검증하고 이상이 없으면 커밋하고 푸시해 줘.
+5. graphify init이 안 된 프로젝트라면 버튼을 "Graft Init"으로 바꿔서 누르면 그래프를 처음 만들게 해 줘.
+6. 테스트로 검증하고 이상이 없으면 커밋하고 푸시해 줘.
 ```
 
 - CLI 설치: `uv tool install --upgrade graphifyy` (`install.sh`가 없을 때 대신 설치합니다)
@@ -157,10 +158,12 @@ https://github.com/Graphify-Labs/graphify
 - 지침 (`global/CLAUDE.md`의 `## Graphify`):
   - 프로젝트의 `CLAUDE.md`, `AGENTS.md`, `.claude/` 설정에 graphify 지침이 이미 있으면(예: `graphify claude install`이 쓴 섹션이나 훅) 그 지침을 따릅니다.
   - 없으면 `graphify-out/graph.json`이 있을 때 코드 구조 질문은 graphify로 먼저 찾습니다. 그래프가 없으면 평소처럼 검색합니다.
-- **Graft Update 버튼** (agent-monitor-pane 0.2.7 이상):
+- **Graft Init / Graft Update 버튼** (agent-monitor-pane 0.2.8 이상):
   - 입력창 위 git 브랜치 줄 오른쪽 끝에 있습니다.
-  - 누르면 세션 폴더에서 `graphify update`를 실행해 처음 그래프를 만든 뒤 바뀐 코드 파일을 반영하고, 결과를 알림으로 보여 줍니다. 코드는 매번 빠르게 다시 읽지만, 바뀐 것이 없으면 그래프 파일은 그대로 둡니다.
-  - 그래프가 없으면 `/graphify .`를 먼저 하라고 알려 줍니다.
-  - 문서·이미지 변경은 Claude에게 `/graphify --update`를 요청해야 반영됩니다.
+  - 세션 폴더에 그래프(`graphify-out/graph.json`)가 없으면 **Graft Init**입니다. 누르면 `graphify update .`로 코드 그래프를 처음 만들고, 버튼이 **Graft Update**로 바뀝니다.
+  - **Graft Update**를 누르면 `graphify update`로 처음 만든 뒤 바뀐 코드 파일을 반영합니다. 코드는 매번 빠르게 다시 읽지만, 바뀐 것이 없으면 그래프 파일은 그대로 둡니다.
+  - 둘 다 LLM 비용이 없고, 결과를 알림으로 보여 줍니다.
+  - 코드만 그래프로 만듭니다. 문서·이미지까지 넣으려면 Claude에게 `/graphify .`(처음)나 `/graphify --update`(이후)를 요청하세요.
+  - 그래프는 프로젝트의 `graphify-out/`에 생깁니다. 커밋하지 않으려면 그 프로젝트의 `.gitignore`에 `graphify-out/`을 넣으세요.
   - 브랜치 이름이 길면 버튼이 다음 줄로 밀리지 않도록 이름 뒤쪽을 `...`으로 자릅니다.
-- 이미 설치된 패널은 패널 아래쪽 **Update** 버튼으로 0.2.7을 받은 뒤 새 세션을 열면 버튼이 나옵니다.
+- 이미 설치된 패널은 패널 아래쪽 **Update** 버튼으로 0.2.8을 받은 뒤 새 세션을 열면 버튼이 나옵니다.
