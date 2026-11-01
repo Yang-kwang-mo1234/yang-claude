@@ -65,7 +65,34 @@ https://github.com/anthropics/claude-plugins-official/tree/main/plugins/commit-c
   - `/commit-commands:commit-push-pr`: 커밋, 푸시, PR 생성을 한 번에 실행
   - `/commit-commands:clean_gone`: 원격에서 지워진 로컬 브랜치 정리
 
-## 2. context7 MCP 서버
+## 2. Superpowers 플러그인
+
+```text
+아래 GitHub 저장소의 Superpowers 플러그인을 Anthropic 공식 플러그인 디렉터리에서 설치해 줘.
+
+GitHub:
+https://github.com/obra/superpowers
+
+1. 공식 문서에서 최신 설치 방법을 확인하고 플러그인을 현재 프로젝트 범위로 설치해 줘.
+2. 설치가 끝나면 플러그인에 들어 있는 스킬 목록을 확인해 줘.
+3. 각 스킬이 언제 쓰이는지 초보자도 이해할 수 있게 설명해 줘.
+4. 스킬이 커밋이나 푸시를 하려고 할 때 CLAUDE.md의 커밋 규칙이 우선하는지 확인해 줘.
+
+설치 후에는 실제 작업을 시작하지 말고 사용 방법만 보여 줘.
+```
+
+- 설치 명령: `claude plugin install superpowers@anthropic-plugin-directory --scope project`
+- 동작: 세션을 시작할 때 `using-superpowers` 스킬이 자동으로 실행되고, 작업에 맞는 스킬을 Claude가 알아서 고릅니다. 직접 부를 때는 `/superpowers:brainstorming`처럼 씁니다.
+- 주요 스킬:
+  - `brainstorming`: 기능을 만들기 전에 요구사항과 설계를 먼저 정리
+  - `writing-plans`, `executing-plans`: 구현 계획을 쓰고 그대로 실행
+  - `test-driven-development`: 테스트를 먼저 쓰고 구현
+  - `systematic-debugging`: 버그 원인을 찾은 뒤에 고치기
+  - `requesting-code-review`, `receiving-code-review`: 코드 리뷰 요청과 반영
+  - `verification-before-completion`: 끝났다고 말하기 전에 실제로 확인
+- 커밋 규칙: 일부 스킬은 단계 중에 커밋하라고 하지만, 이 저장소의 `CLAUDE.md`가 우선합니다. Claude는 커밋, 푸시 전에 항상 먼저 묻습니다.
+
+## 3. context7 MCP 서버
 
 ```text
 아래 GitHub 저장소의 context7 MCP 서버를 현재 프로젝트에 추가해 줘.
@@ -85,7 +112,7 @@ https://github.com/upstash/context7
 - 처음 쓸 때: 새 세션을 시작하면 프로젝트 MCP 서버 승인 창이 한 번 뜹니다. 승인해야 켜집니다.
 - 사용법: 요청에 "context7로 최신 문서 확인해서"를 덧붙입니다.
 
-## 3. 비밀 파일 보호 훅 (protect-secrets)
+## 4. 비밀 파일 보호 훅 (protect-secrets)
 
 ```text
 Claude Code 공식 훅 문서를 참고해서 비밀 파일 보호 훅을 현재 프로젝트에 만들어 줘.
