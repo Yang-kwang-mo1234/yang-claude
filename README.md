@@ -24,12 +24,13 @@ git clone https://github.com/Yang-kwang-mo1234/yang-claude.git && cd yang-claude
 | `CLAUDE.md` | 전역 지침 | 한국어 응답, 하위 에이전트 모델 사용 규칙, 위험 명령 처리 규칙, 계획/다이어그램은 HTML 스킬 사용, graphify 사용 규칙 |
 | `settings.json` `env` | 설정 | `CLAUDE_CODE_SUBAGENT_MODEL=sonnet`: 모델을 따로 정하지 않은 하위 에이전트는 Opus 대신 Sonnet으로 실행 (토큰 절약) |
 | `quick` | 에이전트 (Haiku) | 파일 찾기, 긴 파일·로그 요약, 단순 확인처럼 판단이 필요 없는 일을 Haiku로 처리. 파일은 고치지 않음 |
+| `implementer` | 에이전트 (Sonnet) | 스펙이 명확한 구현·수정 작업과 테스트 실행. 도구를 파일·셸 도구로 제한해 호출할 때마다 드는 기본 토큰을 줄임 |
 | `block-dangerous-git.sh` | 훅 (PreToolUse, Bash) | `git push`, `reset --hard`, `rm -rf` 등을 실행 전에 Allow / Deny로 확인. `git -C 경로 push`처럼 옵션이 끼어도 잡고, `jq`가 없어도 동작 |
 | find-skills | 스킬 | 필요한 스킬을 찾아 설치 |
 | html-plan | 스킬 | 계획 문서를 HTML 파일로 작성 (plannotator/effective-html, 설명만 수정) |
 | html-diagram | 스킬 | 흐름도, 구조도를 HTML로 작성 (plannotator/effective-html, 설명만 수정) |
-| karpathy-guidelines | 스킬 | 코딩 실수를 줄이는 작업 원칙 |
-| skills-update | 스킬 | `/skills-update`로 업스트림이 바뀐 스킬을 찾아 업데이트. 확인은 Node 스크립트(`check.mjs`, macOS/Windows 공통)가 GitHub 폴더 해시만 비교하고, 로컬 수정은 `sources.json`에 적어 둔 대로 다시 넣음 |
+| skills-update | 스킬 | `/skills-update`로 업스트림이 바뀐 스킬을 찾아 업데이트. 확인은 Node 스크립트(`check.mjs`, macOS/Windows 공통)가 GitHub 폴더 해시만 비교하고, 로컬 수정은 `sources.json`에 적어 둔 대로 다시 넣음. 설치 전에 `security-auditor`가 새 버전을 감사하고, 문제가 있으면 그 항목은 업데이트하지 않고 알려 줌 |
+| `security-auditor` | 에이전트 (Opus, 읽기 전용) | 스킬·CLI 업데이트를 설치 전에 감사. 프롬프트 인젝션, 비밀 정보 접근, 외부 전송, 숨긴 코드를 찾아 `VERDICT: PASS/FAIL`로 보고 |
 | graphify | 스킬 | 코드, 문서, 이미지를 지식 그래프로 만들고 `query`/`path`/`explain`으로 질문 (Graphify-Labs/graphify, 목차만 추가) |
 | agent-monitor-pane | 플러그인 | 채팅 옆 모니터 창, 입력창 위 git 브랜치 줄과 **Graft Init / Update** 버튼. `settings.json`의 마켓플레이스 설정으로 GitHub에서 자동 설치 |
 
@@ -44,7 +45,7 @@ PC의 전역 설정을 바꾼 뒤에는 바뀐 파일을 `global/`에 다시 복
 | commit-commands | 플러그인 (스킬) | `.claude/settings.json` | `/commit`, `/commit-push-pr`로 커밋과 PR 작업 |
 | superpowers | 플러그인 (스킬) | `.claude/settings.json` | 브레인스토밍, 계획, TDD, 디버깅, 코드 리뷰 같은 작업 절차 스킬 모음 |
 | context7 | MCP 서버 | `.mcp.json` | 라이브러리의 최신 공식 문서 조회 |
-| protect-secrets | 훅 | `.claude/settings.json`, `.claude/hooks/protect-secrets.sh` | `.env`, 키, 인증서 파일 수정 차단 |
+| protect-secrets | 훅 (전역) | `global/settings.json`, `global/hooks/protect-secrets.sh` | 비밀 파일 수정 차단, 설정·훅·MCP 파일 수정 시 확인. 프로젝트 훅에서 전역으로 옮김 |
 
 ---
 
@@ -113,7 +114,8 @@ https://github.com/upstash/context7
 승인이 필요한 단계가 있으면 내가 해야 할 일을 알려 줘.
 ```
 
-- 설치 명령: `claude mcp add --scope project context7 -- npx -y @upstash/context7-mcp`
+- 설치 명령: `claude mcp add --scope project context7 -- npx -y @upstash/context7-mcp@4.4.4`
+- 버전을 고정해 두었습니다. 올릴 때는 `npm view @upstash/context7-mcp version`으로 확인한 뒤 `.mcp.json`의 버전을 바꿉니다.
 - 처음 쓸 때: 새 세션을 시작하면 프로젝트 MCP 서버 승인 창이 한 번 뜹니다. 승인해야 켜집니다.
 - 사용법: 요청에 "context7로 최신 문서 확인해서"를 덧붙입니다.
 
@@ -134,8 +136,12 @@ https://code.claude.com/docs/en/hooks
 훅이 무엇이고 왜 필요한지 초보자도 이해할 수 있게 설명해 줘.
 ```
 
-- 동작: 대상 파일이 비밀 파일이면 exit code 2로 작업을 막고, Claude에게 사용자가 직접 수정하라고 안내합니다.
-- 차단되는 파일: `.env`, `.env.*`, `*.pem`, `*.key`, `*.p12`, `*.pfx`, `id_rsa*`, `id_ed25519*`, `credentials.json`, `secrets.*`
+- 지금은 전역 훅입니다: `global/hooks/protect-secrets.sh` → `~/.claude/hooks/`, 등록은 `global/settings.json`. 모든 프로젝트에 적용됩니다.
+- 동작: 대상 파일이 비밀 파일이면 exit code 2로 작업을 막고, Claude에게 사용자가 직접 수정하라고 안내합니다. NotebookEdit(`notebook_path`)도 검사합니다.
+- 차단되는 파일: `.env`, `.env.*`, `.envrc`, `*.pem`, `*.key`, `*.p12`, `*.pfx`, `*.jks`, `*.keystore`, `id_rsa*`, `id_ecdsa*`, `id_ed25519*`, `credentials`, `credentials.json`, `service-account*.json`, `secrets.*`, `.netrc`, `.npmrc`, `.pypirc`, `.git-credentials`, `kubeconfig`, 그리고 `.ssh/`, `.aws/`, `.kube/`, `.gnupg/` 아래 파일과 `.docker/config.json`
+- 확인(Allow / Deny)을 받는 파일: `.claude/settings.json`, `.claude/settings.local.json`, `.claude/hooks/*`, `~/.claude.json`, `.mcp.json`. 보호 장치를 몰래 끄지 못하게 합니다.
+- 읽기 차단: `global/settings.json`의 `permissions.deny`에 `Read(//**/.env)`, `Read(~/.ssh/**)` 같은 규칙이 있어 Read 도구로 비밀 값을 불러오지 못합니다. `//**/`는 작업 폴더 밖까지 포함하는 절대 경로 패턴입니다.
+- 한계: Bash(`cat .env`, `echo >> .env`)는 막지 못합니다.
 
 ## 5. graphify 스킬과 Graft Init / Update 버튼
 
