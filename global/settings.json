@@ -1,0 +1,31 @@
+{
+  "hooks": {
+    "PreToolUse": [
+      {
+        "matcher": "Bash",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "~/.claude/hooks/block-dangerous-git.sh"
+          }
+        ]
+      }
+    ]
+  },
+  "enabledPlugins": {
+    "agent-monitor-pane@agent-monitor": true
+  },
+  "extraKnownMarketplaces": {
+    "agent-monitor": {
+      "source": {
+        "source": "github",
+        "repo": "Yang-kwang-mo1234/agent-monitor"
+      }
+    }
+  },
+  "theme": "dark",
+  "attribution": {
+    "commit": "",
+    "pr": ""
+  }
+}
