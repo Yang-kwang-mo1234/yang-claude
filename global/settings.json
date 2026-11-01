@@ -22,6 +22,23 @@
     ]
   },
   "permissions": {
+    "ask": [
+      "Bash(git push *)",
+      "Bash(git commit *)",
+      "Bash(git reset --hard *)",
+      "Bash(git clean *)",
+      "Bash(git branch -D *)",
+      "Bash(git stash drop *)",
+      "Bash(git stash clear *)",
+      "Bash(git filter-branch *)",
+      "Bash(git filter-repo *)",
+      "Bash(git update-ref -d *)",
+      "Bash(rm -r *)",
+      "Bash(rm -rf *)",
+      "Bash(rm -fr *)",
+      "Bash(rm -R *)",
+      "Bash(find * -delete *)"
+    ],
     "deny": [
       "Read(//**/.env)",
       "Read(//**/.env.local)",
@@ -46,6 +63,12 @@
       "Read(~/.npmrc)",
       "Read(~/.pypirc)",
       "Read(~/.docker/config.json)"
+    ]
+  },
+  "autoMode": {
+    "soft_deny": [
+      "$defaults",
+      "git push, git commit, history rewrites (reset --hard, filter-branch, filter-repo, update-ref -d, force push), git stash drop/clear and recursive or bulk deletes (rm -r, find -delete) need the user's own Allow, even when wrapped in bash -c, sh -c, eval, a variable, command substitution, xargs or a script file."
     ]
   },
   "enabledPlugins": {

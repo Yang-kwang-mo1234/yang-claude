@@ -25,7 +25,8 @@ git clone https://github.com/Yang-kwang-mo1234/yang-claude.git && cd yang-claude
 | `settings.json` `env` | 설정 | `CLAUDE_CODE_SUBAGENT_MODEL=sonnet`: 모델을 따로 정하지 않은 하위 에이전트는 Opus 대신 Sonnet으로 실행 (토큰 절약) |
 | `quick` | 에이전트 (Haiku) | 파일 찾기, 긴 파일·로그 요약, 단순 확인처럼 판단이 필요 없는 일을 Haiku로 처리. 파일은 고치지 않음 |
 | `implementer` | 에이전트 (Sonnet) | 스펙이 명확한 구현·수정 작업과 테스트 실행. 도구를 파일·셸 도구로 제한해 호출할 때마다 드는 기본 토큰을 줄임 |
-| `block-dangerous-git.sh` | 훅 (PreToolUse, Bash) | `git push`, `reset --hard`, `rm -rf` 등을 실행 전에 Allow / Deny로 확인. `git -C 경로 push`처럼 옵션이 끼어도 잡고, `jq`가 없어도 동작 |
+| `block-dangerous-git.sh` | 훅 (PreToolUse, Bash) | `git push`, `git commit`, `reset --hard`, `stash drop/clear`, `filter-branch`, `update-ref -d`, `rm -r`, `find -delete` 등을 실행 전에 Allow / Deny로 확인. 커밋은 항상 버튼으로 확인. `git -C 경로 push`, `bash -c "rm -rf"`, 탭 공백처럼 형태가 바뀌어도 잡고, `jq`가 없어도 동작 |
+| `settings.json` `permissions.ask`, `autoMode.soft_deny` | 설정 | 훅과 별개로 같은 명령에 확인을 요구하는 이중 안전망. `soft_deny`는 `eval`, 변수, `$(...)`로 감싼 우회까지 자동 모드 분류기가 잡게 함 |
 | find-skills | 스킬 | 필요한 스킬을 찾아 설치 |
 | html-plan | 스킬 | 계획 문서를 HTML 파일로 작성 (plannotator/effective-html, 설명만 수정) |
 | html-diagram | 스킬 | 흐름도, 구조도를 HTML로 작성 (plannotator/effective-html, 설명만 수정) |

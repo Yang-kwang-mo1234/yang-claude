@@ -13,7 +13,8 @@
 
 ## Guarded commands
 
-- `~/.claude/hooks/block-dangerous-git.sh` doesn't block guarded commands (git push, reset --hard, rm -rf and so on). It asks me with an Allow / Deny prompt instead.
+- `~/.claude/hooks/block-dangerous-git.sh` doesn't block guarded commands (git push, git commit, reset --hard, stash drop, rm -r, find -delete and so on). It asks me with an Allow / Deny prompt instead. `permissions.ask` and `autoMode.soft_deny` in `settings.json` back it up.
+- Every `git commit` must go through that Allow / Deny button, even when I asked for the commit in chat. Never commit in a way that avoids the prompt (another command, a script, the Terminal panel).
 - Run a guarded command on its own, not chained with other commands, so the prompt shows exactly what will run.
 - If I deny it, or it is refused anyway, don't retry it, split it up, or run it another way (for example through the Terminal panel). Tell me what was refused and stop that step.
 - After it runs, check the result (for example `git status`) before going on.

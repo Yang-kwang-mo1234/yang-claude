@@ -4,21 +4,30 @@ INPUT=$(cat)
 # Without jq, match against the raw JSON so the guard still works
 COMMAND=$(echo "$INPUT" | jq -r '.tool_input.command' 2>/dev/null) || COMMAND="$INPUT"
 
+# Spaces and tabs between words
+S="[[:space:]]+"
+# What may come right before a command: line start, ; & | ( `, a quote (bash -c "rm ..."), a space, / (/bin/rm) or \ (\rm)
+PRE="(^|[;&|(\`\"'[:space:]/\\])"
 # "git" plus any global options before the subcommand: -C <path>, -c <key=value>, --no-pager ...
-GIT="git( +(-[Cc]|--git-dir|--work-tree|--namespace) +[^ ;&|]+| +-[^ ;&|]+)*"
+GIT="git($S(-[Cc]|--git-dir|--work-tree|--namespace)$S[^[:space:];&|]+|$S-[^[:space:];&|]+)*"
 
 DANGEROUS_PATTERNS=(
-  "$GIT +push"
-  "$GIT +reset +--hard"
-  "$GIT +clean( [^;&|]*)? +(-[[:alnum:]]*f|--force)"
-  "$GIT +branch( [^;&|]*)? +-D"
+  "$GIT${S}push"
+  # every commit asks, so the user always confirms it with a button
+  "$GIT${S}commit($|[[:space:];&|\"'])"
+  "$GIT${S}reset$S--hard"
+  "$GIT${S}clean([[:space:]][^;&|]*)?$S(-[[:alnum:]]*f|--force)"
+  "$GIT${S}branch([[:space:]][^;&|]*)?$S-D"
   # "." alone, not a file name that starts with a dot (.gitignore)
-  "$GIT +(checkout|restore)( +--)? +\.($|[ ;&|])"
-  "push --force"
-  "reset --hard"
-  # rm with both recursive and force: -rf, -fr, -Rf, -rfv, -r -f, --recursive --force
-  "(^|[;&|(/ ])rm( [^;&|]*)? +(-[[:alnum:]]*[rR]|--recursive)([[:alnum:]]*f|( [^;&|]*)? +(-[[:alnum:]]*f|--force))"
-  "(^|[;&|(/ ])rm( [^;&|]*)? +(-[[:alnum:]]*f|--force)([[:alnum:]]*[rR]|( [^;&|]*)? +(-[[:alnum:]]*[rR]|--recursive))"
+  "$GIT$S(checkout|restore)($S--)?$S\.($|[[:space:];&|])"
+  "$GIT${S}stash$S(drop|clear)"
+  "$GIT${S}update-ref([[:space:]][^;&|]*)?$S-d"
+  "$GIT${S}filter-(branch|repo)"
+  "push$S--force"
+  "reset$S--hard"
+  # any recursive rm: -r, -R, -rf, -fr, -rfv, -f -r, --recursive
+  "${PRE}rm([[:space:]][^;&|]*)?$S(-[[:alnum:]]*[rR]|--recursive)"
+  "${PRE}find([[:space:]][^;&|]*)?$S(-delete|-exec(dir)?${S}rm)"
 )
 
 for pattern in "${DANGEROUS_PATTERNS[@]}"; do
