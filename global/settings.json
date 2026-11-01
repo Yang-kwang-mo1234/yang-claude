@@ -27,5 +27,8 @@
   "attribution": {
     "commit": "",
     "pr": ""
+  },
+  "env": {
+    "CLAUDE_CODE_SUBAGENT_MODEL": "sonnet"
   }
 }

@@ -1,5 +1,15 @@
 # CLAUDE.md
 
+## Language
+
+- 사용자에게 보이는 답변, 요약, 표는 항상 한국어로 쓴다. 코드, 명령어, 커밋 메시지, 파일 내용은 원래 언어를 따른다.
+
+## Subagents and models
+
+- Subagents default to Sonnet (`CLAUDE_CODE_SUBAGENT_MODEL` in `settings.json`).
+- When a search or read would take many tool calls or flood the context (sweeping many files, summarizing long logs or output), hand it to the `quick` agent (Haiku) instead of doing it inline. A lookup that takes a call or two stays inline.
+- Design, debugging, code review and writing code stay with the main model or a Sonnet subagent.
+
 ## Guarded commands
 
 - `~/.claude/hooks/block-dangerous-git.sh` doesn't block guarded commands (git push, reset --hard, rm -rf and so on). It asks me with an Allow / Deny prompt instead.

@@ -1,6 +1,6 @@
 #!/bin/bash
 # Install the global Claude Code setup from global/ into ~/.claude.
-# Only adds what is missing: existing skills, hooks and CLAUDE.md are left as they are,
+# Only adds what is missing: existing skills, hooks, agents and CLAUDE.md are left as they are,
 # and settings.json is merged (existing values win, the hook is added once).
 set -euo pipefail
 
@@ -12,7 +12,7 @@ if ! command -v jq >/dev/null 2>&1; then
   exit 1
 fi
 
-mkdir -p "$DEST/skills" "$DEST/hooks"
+mkdir -p "$DEST/skills" "$DEST/hooks" "$DEST/agents"
 
 # Skills
 for dir in "$SRC"/skills/*/; do
@@ -44,6 +44,17 @@ for file in "$SRC"/hooks/*; do
     cp "$file" "$DEST/hooks/$name"
     chmod +x "$DEST/hooks/$name"
     echo "added  hook $name"
+  fi
+done
+
+# Agents
+for file in "$SRC"/agents/*; do
+  name="$(basename "$file")"
+  if [ -e "$DEST/agents/$name" ]; then
+    echo "skip   agent $name (already installed)"
+  else
+    cp "$file" "$DEST/agents/$name"
+    echo "added  agent $name"
   fi
 done
 

@@ -11,7 +11,7 @@ git clone https://github.com/Yang-kwang-mo1234/yang-claude.git && cd yang-claude
 
 `install.sh`는 `global/` 폴더의 전역 설정을 `~/.claude`에 설치합니다. `jq`가 필요합니다 (`brew install jq`).
 
-- 스킬, 훅, `CLAUDE.md`는 PC에 없을 때만 복사합니다. 이미 있으면 건드리지 않습니다.
+- 스킬, 훅, 에이전트, `CLAUDE.md`는 PC에 없을 때만 복사합니다. 이미 있으면 건드리지 않습니다.
 - graphify CLI가 없으면 `uv tool install graphifyy`로 설치합니다. `uv`가 없으면 설치 방법만 알려 줍니다.
 - `settings.json`은 합칩니다. 기존 값이 우선이고, 훅은 한 번만 추가됩니다. 원래 파일은 실행할 때마다 `settings.json.bak.날짜-시각`으로 따로 남깁니다.
 - 여러 번 실행해도 안전합니다.
@@ -21,7 +21,9 @@ git clone https://github.com/Yang-kwang-mo1234/yang-claude.git && cd yang-claude
 
 | 이름 | 종류 | 하는 일 |
 |---|---|---|
-| `CLAUDE.md` | 전역 지침 | 위험 명령 처리 규칙, 계획/다이어그램은 HTML 스킬 사용, graphify 사용 규칙 |
+| `CLAUDE.md` | 전역 지침 | 한국어 응답, 하위 에이전트 모델 사용 규칙, 위험 명령 처리 규칙, 계획/다이어그램은 HTML 스킬 사용, graphify 사용 규칙 |
+| `settings.json` `env` | 설정 | `CLAUDE_CODE_SUBAGENT_MODEL=sonnet`: 모델을 따로 정하지 않은 하위 에이전트는 Opus 대신 Sonnet으로 실행 (토큰 절약) |
+| `quick` | 에이전트 (Haiku) | 파일 찾기, 긴 파일·로그 요약, 단순 확인처럼 판단이 필요 없는 일을 Haiku로 처리. 파일은 고치지 않음 |
 | `block-dangerous-git.sh` | 훅 (PreToolUse, Bash) | `git push`, `reset --hard`, `rm -rf` 등을 실행 전에 Allow / Deny로 확인. `git -C 경로 push`처럼 옵션이 끼어도 잡고, `jq`가 없어도 동작 |
 | find-skills | 스킬 | 필요한 스킬을 찾아 설치 |
 | html-plan | 스킬 | 계획 문서를 HTML 파일로 작성 (plannotator/effective-html, 설명만 수정) |
