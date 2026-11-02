@@ -17,6 +17,12 @@ git clone https://github.com/Yang-kwang-mo1234/yang-claude.git && cd yang-claude
 - 여러 번 실행해도 안전합니다.
 - 설치 후 Claude Code를 다시 시작해야 적용됩니다.
 
+직접 만든 스킬(`skills-update`)과 그 에이전트(`security-auditor`)는 [yang-skills](https://github.com/Yang-kwang-mo1234/yang-skills) 저장소에서 따로 관리합니다. macOS와 Windows 모두 아래처럼 설치합니다 (Node 18 이상 필요).
+
+```bash
+git clone https://github.com/Yang-kwang-mo1234/yang-skills.git ~/workspace/yang-skills && node ~/workspace/yang-skills/install.mjs
+```
+
 ### 전역 설정 (`global/` → `~/.claude/`)
 
 | 이름 | 종류 | 하는 일 |
@@ -30,8 +36,6 @@ git clone https://github.com/Yang-kwang-mo1234/yang-claude.git && cd yang-claude
 | find-skills | 스킬 | 필요한 스킬을 찾아 설치 |
 | html-plan | 스킬 | 계획 문서를 HTML 파일로 작성 (plannotator/effective-html, 설명만 수정) |
 | html-diagram | 스킬 | 흐름도, 구조도를 HTML로 작성 (plannotator/effective-html, 설명만 수정) |
-| skills-update | 스킬 | `/skills-update`로 업스트림이 바뀐 스킬을 찾아 업데이트. 확인은 Node 스크립트(`check.mjs`, macOS/Windows 공통)가 GitHub 폴더 해시만 비교하고, 로컬 수정은 `sources.json`에 적어 둔 대로 다시 넣음. 설치 전에 `security-auditor`가 새 버전을 감사하고, 문제가 있으면 그 항목은 업데이트하지 않고 알려 줌 |
-| `security-auditor` | 에이전트 (Opus, 읽기 전용) | 스킬·CLI 업데이트를 설치 전에 감사. 프롬프트 인젝션, 비밀 정보 접근, 외부 전송, 숨긴 코드를 찾아 `VERDICT: PASS/FAIL`로 보고 |
 | graphify | 스킬 | 코드, 문서, 이미지를 지식 그래프로 만들고 `query`/`path`/`explain`으로 질문 (Graphify-Labs/graphify, 목차만 추가) |
 | agent-monitor-pane | 플러그인 | 채팅 옆 모니터 창, 입력창 위 git 브랜치 줄과 **Graft Init / Update** 버튼. `settings.json`의 마켓플레이스 설정으로 GitHub에서 자동 설치 |
 
@@ -186,7 +190,8 @@ https://github.com/Graphify-Labs/graphify
 가장 간단하고 토큰을 적게 쓰는 방법으로 만들고, Windows에서도 동작하게 Node로 작성해 줘.
 ```
 
-- 설치: `./install.sh`가 `global/skills/skills-update`를 `~/.claude/skills/skills-update`에 복사합니다. 직접 설치하려면 이 폴더를 그대로 복사하세요. 설치 후 Claude Code를 다시 시작합니다.
+- 위치: 이 저장소가 아니라 [yang-skills](https://github.com/Yang-kwang-mo1234/yang-skills)의 `skills/skills-update`와 `agents/security-auditor.md`에서 관리합니다.
+- 설치: yang-skills에서 `node install.mjs`를 실행하면 `~/.claude/skills/skills-update`와 `~/.claude/agents/security-auditor.md`에 복사합니다. 설치 후 Claude Code를 다시 시작합니다.
 - 필요한 것: Node 18 이상, `gh` (`gh auth login`으로 로그인). macOS와 Windows(Git Bash)에서 똑같이 동작하고, `jq`는 필요 없습니다.
 - 사용: Claude Code에서 `/skills-update`를 입력합니다. `disable-model-invocation: true`라서 입력할 때만 실행되고, 평소에는 스킬 목록에 설명이 올라가지 않습니다.
 - 동작:
