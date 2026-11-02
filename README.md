@@ -43,6 +43,13 @@ git clone https://github.com/Yang-kwang-mo1234/yang-skills.git ~/workspace/yang-
 
 PC의 전역 설정을 바꾼 뒤에는 바뀐 파일을 `global/`에 다시 복사해서 커밋하세요.
 
+### 업데이트와 버전
+
+- 저장소 전체에 버전 하나를 둡니다: `VERSION` 파일과 `vX.Y.Z` 태그. 바뀐 내용은 [CHANGELOG.md](CHANGELOG.md)에 있습니다.
+- 이미 설치한 PC는 Claude Code에서 `/skills-update`를 실행하면 가장 높은 태그의 `global/`을 `~/.claude`에 반영합니다. PC에서도 고친 파일은 diff를 보여 주고 고르게 하고, `settings.json`은 키 단위로 병합합니다. `install.sh`는 처음 설치할 때만 씁니다.
+- 커밋만 하고 릴리스하지 않은 변경은 다른 PC에 반영되지 않습니다. 릴리스하려면 `node ~/workspace/yang-skills/release.mjs patch ~/workspace/yang-claude`(수정) / `minor`(추가) / `major`(호환 깨짐)를 실행하고, 출력된 커밋·태그·push 명령을 차례로 실행합니다.
+- 되돌리기: `/skills-update yang-claude v1.0.0`.
+
 ## 설치 현황
 
 | 이름 | 종류 | 설정 위치 | 하는 일 |
