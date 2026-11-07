@@ -1,6 +1,6 @@
 ---
 name: html-plan
-description: Specialist for clear, self-contained HTML plans that preserve source material while improving hierarchy, sequence, ownership, dependencies, and reviewability. Use whenever a plan is written as a document: implementation plans, roadmaps, rollouts, plans drafted in plan mode. Not for the app's in-message task list.
+description: Specialist for clear, self-contained HTML plans that preserve source material while improving hierarchy, sequence, ownership, dependencies, and reviewability. Use whenever a plan is written as a document: implementation plans, roadmaps, rollouts, plans drafted in plan mode. Not for the app's in-message task list, and not for plans from superpowers writing-plans, which stay Markdown at docs/superpowers/plans/*.md because executing-plans and subagent-driven-development read them.
 ---
 
 # HTML Plan
