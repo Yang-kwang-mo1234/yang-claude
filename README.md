@@ -37,6 +37,7 @@ git clone https://github.com/Yang-kwang-mo1234/yang-skills.git ~/workspace/yang-
 | html-plan | 스킬 | 계획 문서를 HTML 파일로 작성. superpowers `writing-plans` 계획은 Markdown 유지 (plannotator/effective-html, 설명만 수정) |
 | html-diagram | 스킬 | 흐름도, 구조도를 HTML로 작성 (plannotator/effective-html, 설명만 수정) |
 | graphify | 스킬 | 코드, 문서, 이미지를 지식 그래프로 만들고 `query`/`path`/`explain`으로 질문 (Graphify-Labs/graphify, 목차만 추가) |
+| ub-mode | 스킬 | 코드를 고칠 때 Make it Work → Make it Right → Practice 원칙을 따름. `/ub-mode`로 실행 (unclebob/ub-mode, 수정 없음) |
 | agent-monitor-pane | 플러그인 | 채팅 옆 모니터 창, 입력창 위 git 브랜치 줄과 **Graft Init / Update** 버튼. `settings.json`의 마켓플레이스 설정으로 GitHub에서 자동 설치 |
 
 스킬 문서(`SKILL.md`)마다 맨 위에 목차(`## Contents`)가 있습니다.
